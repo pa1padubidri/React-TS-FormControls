@@ -1,58 +1,39 @@
-import React, { useState } from "react";
-import Select, { components } from "react-select";
-
-const Menu = (props: any) => {
-  const optionSelectedLength = props.getValue().length || 0;
-  return (
-    <components.Menu {...props}>
-      {optionSelectedLength < 3 ? (
-        props.children
-      ) : (
-        <div
-          className={
-            "react-select__menu-notice react-select__menu-notice--no-options"
-          }
-        >
-          Maximum limit achieved
-        </div>
-      )}
-    </components.Menu>
-  );
-};
-
-const DropdownIndicator = (props: {
-  // getStyles: any;
-  innerProps: { [x: string]: any; ref: any };
-}) => {
-  const {
-    // getStyles,
-    innerProps: { ref, ...restInnerProps }
-  } = props;
-  return (
-    <div {...restInnerProps} ref={ref}>
-      <div style={{ padding: "0px 5px" }}>{/* <IconSearch /> */}</div>
-    </div>
-  );
-};
+import * as React from "react";
+import Select from "react-select";
+import { ISuggestionType } from "./certifications";
 
 type MultiselectProps = {
-  options: Array<{ label: string; value: string }>;
-  selectedItems: Array<string>;
+  options: Array<ISuggestionType>;
+  selectedItems: object | null;
   onSelect: (tags: any) => void;
 };
 
 const Multiselect: React.FC<MultiselectProps> = props => {
-  const [typedTag, setTypedTag] = useState<string>("");
+  const [openMenu, setOpenMenu] = React.useState(false);
 
-  const onInputChange = (tag: string) => {
-    setTypedTag(tag);
+  const onInputChange = (query: string, event: { action: string }) => {
+    if (event.action === "input-change") setOpenMenu(true);
+    if (query === "") setOpenMenu(false);
+  };
+
+  const filterOption = (option: ISuggestionType, rawInput: string) => {
+    const { label, value } = option;
+    const matchedSuggestions = props.options.filter(
+      opt =>
+        opt.label === label &&
+        opt.value.toLowerCase().includes(rawInput.toLowerCase())
+    );
+    return (
+      value.toLowerCase().includes(rawInput.toLowerCase()) ||
+      matchedSuggestions.length > 0
+    );
   };
 
   return (
     <Select
-      components={{ Menu, DropdownIndicator: DropdownIndicator }}
+      filterOption={filterOption}
       defaultValue={props.selectedItems}
-      isMulti
+      isMulti={true}
       options={props.options}
       onChange={props.onSelect}
       placeholder="Type a category. Ex: American Board of Internal Medicine"
@@ -60,7 +41,8 @@ const Multiselect: React.FC<MultiselectProps> = props => {
       classNamePrefix="react-select"
       isSearchable={true}
       onInputChange={onInputChange}
-      noOptionsMessage={() => null}
+      noOptionsMessage={() => "Does not exist"}
+      menuIsOpen={openMenu}
     />
   );
 };

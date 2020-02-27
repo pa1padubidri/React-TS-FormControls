@@ -1,23 +1,19 @@
 import React from "react";
 import Multiselect from "./multiselect/MultiSelect";
-import { certifications } from "./helpers/certifications";
+import { suggestions, ISuggestionType } from "./multiselect/certifications";
 
 const App = () => {
-  const [selectedItems, setSelectedItems] = React.useState<Array<string>>([""]);
-  const [showMulti, setShowMulti] = React.useState(true);
-  const options = certifications.map(val => ({
-    label: val,
-    value: val
-  }));
+  const [selectedItems, setSelectedItems] = React.useState<{
+    [key: string]: ISuggestionType;
+  } | null>(null);
+  const [showMulti, setShowMulti] = React.useState<boolean>(true);
 
-  const onSelect = (tags: any) => {
-    let selected = Object.keys(tags).map(key => tags[key].value);
-    setSelectedItems(selected);
+  const onSelect = (tags: { [key: string]: ISuggestionType }) => {
+    setSelectedItems(tags);
   };
 
   const checkRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.currentTarget.value);
-    if (event.currentTarget.value === "text") setShowMulti(false);
+    if (event.currentTarget.value === "not-multiselect") setShowMulti(false);
     else setShowMulti(true);
   };
 
@@ -34,18 +30,18 @@ const App = () => {
       <input
         type="radio"
         name="select"
-        value="text"
+        value="not-multiselect"
         onChange={checkRadio}
       ></input>
-      <label htmlFor="text">Text</label>
+      <label htmlFor="not-multiselect">No multiselect</label>
       {showMulti ? (
         <Multiselect
-          options={options}
+          options={suggestions}
           selectedItems={selectedItems}
           onSelect={onSelect}
         />
       ) : (
-        <div>ok</div>
+        <div>Multiselect reset</div>
       )}
     </div>
   );

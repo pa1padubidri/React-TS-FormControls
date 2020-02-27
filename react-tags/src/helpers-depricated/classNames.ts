@@ -8,5 +8,5 @@ export const CLASS_NAMES = {
   searchInput: "input-tags-search-input",
   suggestions: "input-tags-suggestions",
   suggestionActive: "is-active",
-  suggestionDisabled: "is-disabled"
+  suggestionDisabled: "is-disabled" khhhhhhhhhhhhhhhh
 };

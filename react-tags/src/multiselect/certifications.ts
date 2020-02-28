@@ -18,3 +18,7 @@ export type ISuggestionType = {
   label: string;
   value: string;
 };
+
+export type IOptions = {
+  options: Array<ISuggestionType>;
+};

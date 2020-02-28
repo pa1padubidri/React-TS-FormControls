@@ -1,14 +1,17 @@
 import * as React from "react";
 import Select from "react-select";
-import { ISuggestionType } from "./certifications";
+import { IOptions, ISuggestionType } from "./certifications";
+import { FieldRenderProps } from "react-final-form";
 
 type MultiselectProps = {
+  name: string;
   options: Array<ISuggestionType>;
-  selectedItems: object | null;
-  onSelect: (tags: any) => void;
+  onChange: (tags: any) => void;
+  value: any;
 };
 
-const Multiselect: React.FC<MultiselectProps> = props => {
+const Multiselect: React.FC<FieldRenderProps<ISuggestionType> &
+  IOptions> = props => {
   const [openMenu, setOpenMenu] = React.useState(false);
 
   const onInputChange = (query: string, event: { action: string }) => {
@@ -30,20 +33,25 @@ const Multiselect: React.FC<MultiselectProps> = props => {
   };
 
   return (
-    <Select
-      filterOption={filterOption}
-      defaultValue={props.selectedItems}
-      isMulti={true}
-      options={props.options}
-      onChange={props.onSelect}
-      placeholder="Type a category. Ex: American Board of Internal Medicine"
-      className="react-select-container"
-      classNamePrefix="react-select"
-      isSearchable={true}
-      onInputChange={onInputChange}
-      noOptionsMessage={() => "Does not exist"}
-      menuIsOpen={openMenu}
-    />
+    <div>
+      <Select
+        filterOption={filterOption}
+        defaultValue={props.input.value}
+        isMulti={true}
+        options={props.options}
+        onChange={props.input.onChange}
+        placeholder="Type a category. Ex: American Board of Internal Medicine"
+        className="react-select-container"
+        classNamePrefix="react-select"
+        isSearchable={true}
+        onInputChange={onInputChange}
+        noOptionsMessage={() => "Does not exist"}
+        menuIsOpen={openMenu}
+      />
+      {props.meta.error && props.meta.touched && (
+        <span>{props.meta.error}</span>
+      )}
+    </div>
   );
 };
 

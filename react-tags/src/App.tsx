@@ -1,5 +1,7 @@
 import React from "react";
 import Multiselect from "./multiselect/MultiSelect";
+import { Form, Field } from "react-final-form";
+import { OnChange } from "react-final-form-listeners";
 import { suggestions, ISuggestionType } from "./multiselect/certifications";
 
 const App = () => {
@@ -8,8 +10,8 @@ const App = () => {
   } | null>(null);
   const [showMulti, setShowMulti] = React.useState<boolean>(true);
 
-  const onSelect = (tags: { [key: string]: ISuggestionType }) => {
-    setSelectedItems(tags);
+  const onSubmit = (values: any) => {
+    console.dir(values);
   };
 
   const checkRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,25 +26,38 @@ const App = () => {
         name="select"
         defaultChecked
         onChange={checkRadio}
-        value="multiselect"
-      ></input>
+        value={"multiselect"}
+      />
       <label htmlFor="multiselect">Multiselect</label>
       <input
         type="radio"
         name="select"
         value="not-multiselect"
         onChange={checkRadio}
-      ></input>
+      />
       <label htmlFor="not-multiselect">No multiselect</label>
       {showMulti ? (
-        <Multiselect
-          options={suggestions}
-          selectedItems={selectedItems}
-          onSelect={onSelect}
-        />
+        <Form onSubmit={onSubmit}>
+          {props => (
+            <form onSubmit={props.handleSubmit}>
+              <Field name="multi">{props => <Multiselect />}</Field>
+              <button type="submit" disabled={props.submitting}>
+                Submit
+              </button>
+              <button
+                type="button"
+                onClick={props.form.reset}
+                disabled={props.submitting || props.pristine}
+              >
+                Reset
+              </button>
+            </form>
+          )}
+        </Form>
       ) : (
         <div>Multiselect reset</div>
       )}
+      <br />
     </div>
   );
 };

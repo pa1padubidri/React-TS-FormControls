@@ -1,47 +1,63 @@
-import * as React from "react";
-// import { render } from "react-dom";
+import React from "react";
+import Multiselect from "../multiselect/MultiSelect";
 import { Form, Field } from "react-final-form";
-import Select from "react-select";
+import { suggestions } from "../multiselect/certifications";
 
 const FormComponent = () => {
   const onSubmit = (values: any) => {
     console.dir(values);
   };
-  const required = (value: string) => (value ? undefined : "Required");
 
   return (
-    <Form onSubmit={onSubmit}>
-      {({ handleSubmit, form, submitting, pristine, values }) => (
-        <form onSubmit={handleSubmit}>
-          <Field name="drName" validate={required}>
-            {({ input, meta }) => (
-              <div>
-                <label>Dr Name</label>
-                <br />
-                <input {...input} type="text" placeholder="Dr House" />
-                {meta.error && meta.touched && <span>{meta.error}</span>}
-              </div>
-            )}
-          </Field>
-          <br />
-          <Field name="multiselect">{({ input }) => <div></div>}</Field>
-          <br />
-          <div className="buttons">
-            <button type="submit" disabled={submitting}>
+    <div>
+      <Form onSubmit={onSubmit}>
+        {props => (
+          <form onSubmit={props.handleSubmit}>
+            <Field
+              name="multi"
+              component={Multiselect}
+              options={suggestions}
+            ></Field>
+            <br />
+            <Field name="radio" component="input" type="radio" value="yes" />
+            Yes
+            <br />
+            <Field
+              name="radio"
+              component="input"
+              type="radio"
+              value="no"
+              validate={e => (e ? undefined : "Please select one")}
+            >
+              {props => (
+                <div>
+                  <input {...props.input} />
+                  No
+                  <br />
+                  <span>
+                    {(props.meta.submitSucceeded || props.meta.submitFailed) &&
+                    props.meta.error
+                      ? props.meta.error
+                      : undefined}
+                  </span>
+                </div>
+              )}
+            </Field>
+            <button type="submit" disabled={props.submitting}>
               Submit
             </button>
             <button
               type="button"
-              onClick={form.reset}
-              disabled={submitting || pristine}
+              onClick={props.form.reset}
+              disabled={props.submitting || props.pristine}
             >
               Reset
             </button>
-          </div>
-          <pre>{JSON.stringify(values)}</pre>
-        </form>
-      )}
-    </Form>
+          </form>
+        )}
+      </Form>
+    </div>
   );
 };
+
 export default FormComponent;

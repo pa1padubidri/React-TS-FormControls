@@ -40,7 +40,11 @@ const App = () => {
         <Form onSubmit={onSubmit}>
           {props => (
             <form onSubmit={props.handleSubmit}>
-              <Field name="multi">{props => <Multiselect />}</Field>
+              <Field
+                name="multi"
+                component={Multiselect}
+                options={suggestions}
+              ></Field>
               <button type="submit" disabled={props.submitting}>
                 Submit
               </button>

@@ -4,14 +4,12 @@ import { IOptions, ISuggestionType } from "./certifications";
 import { FieldRenderProps } from "react-final-form";
 
 type MultiselectProps = {
-  name: string;
-  options: Array<ISuggestionType>;
-  onChange: (tags: any) => void;
-  value: any;
-};
+  boxColor?: string;
+} & IOptions;
 
-const Multiselect: React.FC<FieldRenderProps<ISuggestionType> &
-  IOptions> = props => {
+const Multiselect: React.FC<
+  FieldRenderProps<ISuggestionType> & MultiselectProps
+> = props => {
   const [openMenu, setOpenMenu] = React.useState(false);
 
   const onInputChange = (query: string, event: { action: string }) => {
@@ -26,6 +24,7 @@ const Multiselect: React.FC<FieldRenderProps<ISuggestionType> &
         opt.label === label &&
         opt.value.toLowerCase().includes(rawInput.toLowerCase())
     );
+
     return (
       value.toLowerCase().includes(rawInput.toLowerCase()) ||
       matchedSuggestions.length > 0
@@ -33,25 +32,27 @@ const Multiselect: React.FC<FieldRenderProps<ISuggestionType> &
   };
 
   return (
-    <div>
-      <Select
-        filterOption={filterOption}
-        defaultValue={props.input.value}
-        isMulti={true}
-        options={props.options}
-        onChange={props.input.onChange}
-        placeholder="Type a category. Ex: American Board of Internal Medicine"
-        className="react-select-container"
-        classNamePrefix="react-select"
-        isSearchable={true}
-        onInputChange={onInputChange}
-        noOptionsMessage={() => "Does not exist"}
-        menuIsOpen={openMenu}
-      />
-      {props.meta.error && props.meta.touched && (
-        <span>{props.meta.error}</span>
-      )}
-    </div>
+    <Select
+      filterOption={filterOption}
+      defaultValue={props.input.value}
+      isMulti={true}
+      options={props.options}
+      onChange={props.input.onChange}
+      placeholder="Type a category. Ex: American Board of Internal Medicine"
+      className="react-select-container"
+      classNamePrefix="react-select"
+      isSearchable={true}
+      onInputChange={onInputChange}
+      noOptionsMessage={() => "Does not exist"}
+      menuIsOpen={openMenu}
+      theme={theme => ({
+        ...theme,
+        colors: {
+          ...theme.colors,
+          neutral20: props.boxColor || "gray"
+        }
+      })}
+    />
   );
 };
 
